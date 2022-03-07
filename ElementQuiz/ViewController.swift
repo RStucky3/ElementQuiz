@@ -24,6 +24,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var answerLabel: UILabel!
     @IBOutlet weak var modeSelector: UISegmentedControl!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var counter: UILabel!
     
     @IBAction func switchModes(_ sender: Any) {
         if modeSelector.selectedSegmentIndex == 0 {
@@ -57,12 +58,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func updateFlashCardUI(elementName: String) {
         // Text field and keyboard
         textField.isHidden = true
+        counter.isHidden = true
         textField.resignFirstResponder()
         // Answer label
         if state == .answer {
             answerLabel.text = elementName
         } else {
-            answerLabel.text = "?"
+            answerLabel.text = "🤔"
         }
         modeSelector.selectedSegmentIndex = 0
     }
@@ -94,6 +96,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         textField.isHidden = false
         switch state {
         case .question:
+            counter.text =  "\(currentElementIndex+1) / \(elementList.count)"
+            counter.isHidden = false
             textField.isEnabled = true
             textField.text = ""
             textField.becomeFirstResponder()
@@ -161,7 +165,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func displayScoreAlert() {
         let alert = UIAlertController(title:"Quiz Score",message: "Your score is \(correctAnswerCount) out of \(elementList.count).",preferredStyle: .alert)
         let dismissAction =
-           UIAlertAction(title: "OK",
+           UIAlertAction(title: "👍🏻",
            style: .default, handler:
            scoreAlertDismissed(_:))
         alert.addAction(dismissAction)
