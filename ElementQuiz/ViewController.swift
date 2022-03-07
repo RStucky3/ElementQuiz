@@ -49,6 +49,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         updateUI()
         elementList = elementList.shuffled()
+        
         // Do any additional setup after loading the view.
     }
     
@@ -180,7 +181,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         correctAnswerCount = 0
         elementList = elementList.shuffled()
     }
-    
 }
 
 
