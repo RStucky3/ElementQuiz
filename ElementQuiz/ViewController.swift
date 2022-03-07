@@ -40,16 +40,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    
+    var elementList = ["Carbon", "Gold", "Chlorine","Sodium", "Sulfer", "Dubnium", "Neon", "Moscovium", "Nitrogen", "Lead", "Iron", "Oxygen", "Chromium", "Magnesium", "Roentgenium", "Uranium", "Tennessine", "Platinum", "Potassium", "Zinc", "Krypton", "Cobalt", "Titanium", "Nickel", "Helium"]
 
     var state: State = .question
 
     override func viewDidLoad() {
         super.viewDidLoad()
         updateUI()
+        elementList = elementList.shuffled()
         // Do any additional setup after loading the view.
     }
-    let elementList = ["Carbon", "Gold", "Chlorine","Sodium"]
+    
+    
     var currentElementIndex = 0
     
     func updateFlashCardUI(elementName: String) {
@@ -62,6 +64,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         } else {
             answerLabel.text = "?"
         }
+        modeSelector.selectedSegmentIndex = 0
     }
     
     @IBAction func showAnswer(_ sender: Any) {
@@ -91,13 +94,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
         textField.isHidden = false
         switch state {
         case .question:
+            textField.isEnabled = true
             textField.text = ""
             textField.becomeFirstResponder()
         case .answer:
+            textField.isEnabled = false
             textField.resignFirstResponder()
         case .score:
+            textField.isEnabled = true
             textField.isHidden = true
             textField.resignFirstResponder()
+        if state == .score {
+                displayScoreAlert()
+            }
         }
         // Answer label
         switch state {
@@ -107,12 +116,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
             if answerIsCorrect {
                 answerLabel.text = "Correct!"
             } else {
-                answerLabel.text = "❌"
+                answerLabel.text = "❌\nCorrect Answer: " + elementName
             }
             case .score:
                 answerLabel.text = ""
                 print("Your score is \(correctAnswerCount) out of \(elementList.count).")
         }
+        modeSelector.selectedSegmentIndex = 1
     }
 
     func updateUI() {
@@ -147,6 +157,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         updateUI()
         return true
     }
+    
+    func displayScoreAlert() {
+        let alert = UIAlertController(title:"Quiz Score",message: "Your score is \(correctAnswerCount) out of \(elementList.count).",preferredStyle: .alert)
+        let dismissAction =
+           UIAlertAction(title: "OK",
+           style: .default, handler:
+           scoreAlertDismissed(_:))
+        alert.addAction(dismissAction)
+        present(alert, animated: true,
+           completion: nil)
+    }
+    func scoreAlertDismissed(_ action: UIAlertAction) {
+        mode = .flashCard
+        state = .question
+        currentElementIndex = 0
+        answerIsCorrect = false
+        correctAnswerCount = 0
+        elementList = elementList.shuffled()
+    }
+    
 }
+
+
 
 
